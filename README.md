@@ -2,9 +2,12 @@
 
 ## Run the game
 
+### Requirements
+Python 3.10–3.14 (SPADE does not support 3.15 yet).
+
 ### Create virtual environment
 ```bash
-$ python3 -m venv .venv
+$ python3.13 -m venv .venv
 $ source .venv/bin/activate
 ```
 
