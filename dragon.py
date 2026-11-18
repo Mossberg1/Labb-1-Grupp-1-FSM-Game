@@ -63,7 +63,7 @@ class Wakeup(State):
 
 class Dragon(Agent):
     async def setup(self):
-        self.__chance_to_wakeup = 0.5
+        self.__chance_to_wakeup = 0.05
         
         fsm = DragonFSM()
         fsm.add_state(name=SLEEP, state=Sleep(), initial=True)
