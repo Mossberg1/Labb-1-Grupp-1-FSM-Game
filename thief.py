@@ -61,8 +61,11 @@ class Stealing(State):
 
 class Flee(State):
     async def run(self):
-        msg = await self.receive(timeout=2)
-        if msg and msg.body == CAUGHT:
+        msg = Message(to=DRAGON)
+        msg.body = FLEE
+        await self.send(msg)
+        reply = await self.receive(timeout=2)
+        if reply and reply.body == CAUGHT:
             self.set_next_state(CAUGHT)
         else:
             self.set_next_state(ESCAPED)
