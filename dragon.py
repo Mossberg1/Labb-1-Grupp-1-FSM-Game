@@ -16,6 +16,7 @@ class Sleep(State):
         msg = await self.receive(timeout=2)
 
         if msg and msg.body == ESCAPED:
+            self.set_next_state(None) # VIKTIGT måste sätta None för att avsluta spelet när tjuven flyr.
             return
         
         # TODO: Ändra senare
