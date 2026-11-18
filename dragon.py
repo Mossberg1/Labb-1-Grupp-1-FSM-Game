@@ -1,3 +1,9 @@
+# William Mossberg (h24wilmo)
+# Viktor Eriksson (h24verik)
+# Oskar Johansson (h24oskjo) 
+# Tom Bergman (h24tober)
+# Tobias Söder (h24tobso)
+
 from spade.agent import Agent
 from spade.behaviour import FSMBehaviour, State
 from spade.message import Message
@@ -7,6 +13,7 @@ from termcolor import colored
 import random
 
 
+# Variabler för att inte printa drakens state flera gånger.
 has_printed_yellow_warning = False
 has_printed_red_warning = False
 
@@ -38,17 +45,17 @@ class Sleep(State):
         
         print_dragon_wakup_state(self.agent.chance_to_wakeup)
         
-        if msg and msg.body == STEALING and msg.body != SNEAK:
+        if msg and msg.body == STEALING: # Om tjuven stjäl, öka chansen att vakna.
             self.agent.increase_chance_to_wakeup() 
 
-        if msg and (msg.body == STEALING or msg.body == SNEAK or msg.body == FLEE) and wakeup:
+        if msg and (msg.body == STEALING or msg.body == SNEAK or msg.body == FLEE) and wakeup: # Kolla om draken ska vakna.
             print("Draken har vaknat!")
             if msg.body != FLEE:
                 msg = Message(to=THIEF)
                 msg.body = WAKEUP
                 await self.send(msg)
             self.set_next_state(WAKEUP)
-        else:
+        else: # Om draken inte har vaknat, fortsätt i state SLEEP.
             self.set_next_state(SLEEP)
 
 
@@ -66,14 +73,20 @@ class Dragon(Agent):
         self.__chance_to_wakeup = 0.05
         
         fsm = DragonFSM()
+        
+        # Lägg till states.
         fsm.add_state(name=SLEEP, state=Sleep(), initial=True)
         fsm.add_state(name=WAKEUP, state=Wakeup())
+        
+        # Lägg till transitions
         fsm.add_transition(source=SLEEP, dest=SLEEP)
         fsm.add_transition(source=SLEEP, dest=WAKEUP)
+        
         self.add_behaviour(fsm)
     
     
     def increase_chance_to_wakeup(self):
+        # Ökar chansen för att vakna.
         chance = self.__chance_to_wakeup + 0.05
         self.__chance_to_wakeup = min(chance, 0.5)
     

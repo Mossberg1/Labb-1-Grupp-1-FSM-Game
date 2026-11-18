@@ -1,7 +1,17 @@
+# William Mossberg (h24wilmo)
+# Viktor Eriksson (h24verik)
+# Oskar Johansson (h24oskjo) 
+# Tom Bergman (h24tober)
+# Tobias Söder (h24tobso)
+
 import spade
 from thief import Thief
 from dragon import Dragon
 from config import THIEF, DRAGON
+import logging
+
+
+logging.getLogger("spade.Agent").setLevel(logging.ERROR) # Ta bort SPADE loggar från terminalen.
 
 
 async def main():

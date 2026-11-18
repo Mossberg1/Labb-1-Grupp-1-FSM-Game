@@ -1,8 +1,16 @@
+# William Mossberg (h24wilmo)
+# Viktor Eriksson (h24verik)
+# Oskar Johansson (h24oskjo) 
+# Tom Bergman (h24tober)
+# Tobias Söder (h24tobso)
+
 from spade.agent import Agent
 from spade.behaviour import FSMBehaviour, State
 from spade.message import Message
 from states import WAKEUP, STEALING, FLEE, SNEAK, CAUGHT, ESCAPED, START
 from config import DRAGON
+from termcolor import colored
+import random
 
 
 class ThiefFSM(FSMBehaviour):
@@ -45,12 +53,14 @@ class Stealing(State):
         await self.send(msg)
         
         reply = await self.receive(timeout=2)
-        if reply and reply.body == WAKEUP:
+        if reply and reply.body == WAKEUP: # Fly om draken vaknar.
             self.set_next_state(FLEE)
-        else:
-            self.agent.add_gold(1)
+        else: # Välj om du vill fortsätta stjäla eller inte.
+            gold = random.randint(5, 20)
+            print(colored(f"+{gold}", "green"))
+            self.agent.add_gold(gold)
             while True:
-                steal_more = input("Vill du stjäla mer? (y/n): ")
+                steal_more = input(f"Guld: {self.agent.gold} Vill du stjäla mer? (y/n): ")
                 if steal_more == "y":
                     self.set_next_state(STEALING)
                     break
@@ -89,6 +99,8 @@ class Thief(Agent):
         self.__gold = 0
         
         fsm = ThiefFSM()
+        
+        # Lägg till states
         fsm.add_state(name=START, state=Start(), initial=True)
         fsm.add_state(name=SNEAK, state=Sneak())
         fsm.add_state(name=STEALING, state=Stealing())
@@ -96,6 +108,7 @@ class Thief(Agent):
         fsm.add_state(name=CAUGHT, state=Caught())
         fsm.add_state(name=ESCAPED, state=Escaped())
         
+        # Lägg till transitions
         fsm.add_transition(source=START, dest=SNEAK)
         fsm.add_transition(source=SNEAK, dest=STEALING)
         fsm.add_transition(source=SNEAK, dest=FLEE)
