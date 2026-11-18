@@ -33,7 +33,7 @@ class Start(State):
         self.set_next_state(SNEAK)
 
 
-class Sneak(State): # Start state
+class Sneak(State):
     async def run(self):
         msg = Message(to=DRAGON)
         msg.body = SNEAK
